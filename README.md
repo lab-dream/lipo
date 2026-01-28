@@ -26,3 +26,7 @@ pip install action-lipo
 ## Run & Visualization
    - Visualize lipo:
        [lipo_visualization.ipynb](lipo_visualization.ipynb)
+
+## ROS 2 Integration
+LiPo can also be used within ROS 2 pipelines.
+See: https://github.com/lab-dream/lipo_ros2

@@ -100,7 +100,7 @@ class LiPoSolver(ABC):
         pass
 
 
-class ClarabelSolver(LiPoSolver):
+class CvxpySolver(LiPoSolver):
     def __init__(self, config: LiPoConfig):
         super().__init__(config)
 
@@ -139,7 +139,7 @@ class ClarabelSolver(LiPoSolver):
         t1 = time.perf_counter()
 
         if self.epsilon_var.value is None:
-            return None, RuntimeError("clarabel solve failed")
+            return None, RuntimeError("cvxpy(CLARABEL) solve failed")
 
         self.epsilon[:] = self.epsilon_var.value
         np.add(self.epsilon, self.ref, out=self.solved)
@@ -249,20 +249,20 @@ class OsqpSolver(LiPoSolver):
 
 def _create_solver(name: str, config: LiPoConfig):
     registry = {
-        "CLARABEL": ClarabelSolver,
+        "CVXPY": CvxpySolver,
         "OSQP": OsqpSolver,
     }
 
     solver_cls = registry.get(name.upper())
     if solver_cls is None:
-        raise ValueError(f"Unsupported solver: {name}")
+        raise ValueError(f"Unsupported solver: {name}. Supported solvers are: {[k.lower() for k in registry.keys()]}")
     return solver_cls(config)
 
 
 class ActionLiPo:
     def __init__(
         self,
-        solver="OSQP",
+        solver="osqp",
         chunk_size=100,
         blending_horizon=10,
         action_dim=7,
@@ -277,7 +277,7 @@ class ActionLiPo:
         """
         ActionLiPo (Action Lightweight Post-Optimizer) for action optimization.      
         Parameters:
-        - solver: The solver to use for the optimization problem.
+        - solver: The solver to use for the optimization problem. Options include "cvxpy" and "osqp".
         - chunk_size: The size of the action chunk to optimize.
         - blending_horizon: The number of actions to blend with past actions.
         - action_dim: The dimension of the action space.

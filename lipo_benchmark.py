@@ -50,21 +50,21 @@ def parse_args():
 
 
 def make_solver_specs(chunk, blend, time_delay):
-    CLARABEL_kwargs = {
-        "solver": "CLARABEL",
+    CVXPY_kwargs = {
+        "solver": "cvxpy",
         "chunk_size": chunk,
         "blending_horizon": blend,
         "len_time_delay": time_delay,
     }
     OSQP_kwargs = {
-        "solver": "OSQP",
+        "solver": "osqp",
         "chunk_size": chunk,
         "blending_horizon": blend,
         "len_time_delay": time_delay,
     }
     
     return [
-        ("LiPo", ActionLiPo, CLARABEL_kwargs),
+        ("LiPo", ActionLiPo, CVXPY_kwargs),
         ("OSQP", ActionLiPo, OSQP_kwargs),
     ]
 

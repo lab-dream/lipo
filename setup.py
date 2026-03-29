@@ -2,16 +2,19 @@ from setuptools import setup, find_packages
 
 setup(
     name='action_lipo',
-    version='0.2.0',
+    version='0.3.0',
     description='A lightweight post-optimizer for action chunks',
     author='Suhan Park',
     author_email='park94@kw.ac.kr',
     packages=find_packages(),
     install_requires=[
         'numpy>=1.18.0',
-        'cvxpy>=1.1.0',
-        'osqp>=1.0.0'
     ],
+    extras_require={
+        'cvxpy': ['cvxpy>=1.1.0'],
+        'osqp': ['osqp>=1.0.0', 'scipy'],
+        'all': ['cvxpy>=1.1.0', 'osqp>=1.0.0', 'scipy'],
+    },
     python_requires='>=3.7',
     classifiers=[
     ],

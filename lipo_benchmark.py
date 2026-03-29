@@ -62,10 +62,17 @@ def make_solver_specs(chunk, blend, time_delay):
         "blending_horizon": blend,
         "len_time_delay": time_delay,
     }
-    
+    NUMPY_kwargs = {
+        "solver": "numpy",
+        "chunk_size": chunk,
+        "blending_horizon": blend,
+        "len_time_delay": time_delay,
+    }
+
     return [
         ("LiPo", ActionLiPo, CVXPY_kwargs),
         ("OSQP", ActionLiPo, OSQP_kwargs),
+        ("NUMPY", ActionLiPo, NUMPY_kwargs),
     ]
 
 
@@ -185,6 +192,13 @@ def plot_results(results, summary, joint_index, chunk, blend, time_delay, dt, x_
             "linestyle": "-",
             "alpha": 0.68,
             "zorder": 11,
+        },
+        "NUMPY": {
+            "color": "#2ECC40",
+            "linewidth": 2.8,
+            "linestyle": "-",
+            "alpha": 0.68,
+            "zorder": 14,
         },
     }
 

@@ -24,6 +24,26 @@ class NumpyADMMSolverInitError(RuntimeError):
     """Raised when the specialized numpy ADMM solver is unsafe to initialize."""
 
 
+def _print_solved_times(log):
+    if not log:
+        print("No logs available.")
+        return
+
+    finite_times = np.array(
+        [entry["time"] for entry in log if np.isfinite(entry["time"])],
+        dtype=float,
+    )
+    num_logs = len(log)
+    print(f"Number of logs: {num_logs}")
+    if finite_times.size == 0:
+        print("Average solved time: unavailable (no finite solve times logged)")
+        return
+
+    avg_time = np.mean(finite_times)
+    std_time = np.std(finite_times)
+    print(f"Average solved time: {avg_time:.4f} seconds, Std: {std_time:.4f} seconds")
+
+
 class LiPoSolver(ABC):
     def __init__(self, config: LiPoConfig):        
         self.config = config
@@ -79,23 +99,7 @@ class LiPoSolver(ABC):
         self.log = []
 
     def print_solved_times(self):
-        if not self.log:
-            print("No logs available.")
-            return
-
-        finite_times = np.array(
-            [entry["time"] for entry in self.log if np.isfinite(entry["time"])],
-            dtype=float,
-        )
-        num_logs = len(self.log)
-        print(f"Number of logs: {num_logs}")
-        if finite_times.size == 0:
-            print("Average solved time: unavailable (no finite solve times logged)")
-            return
-
-        avg_time = np.mean(finite_times)
-        std_time = np.std(finite_times)
-        print(f"Average solved time: {avg_time:.4f} seconds, Std: {std_time:.4f} seconds")
+        _print_solved_times(self.log)
 
     @abstractmethod
     def solve(self, actions: np.ndarray, past_actions: np.ndarray, len_past_actions: int):
@@ -478,7 +482,7 @@ def _create_solver(name: str, config: LiPoConfig):
 class ActionLiPo:
     def __init__(
         self,
-        solver="numpy",
+        solver="osqp",
         chunk_size=100,
         blending_horizon=10,
         action_dim=7,
@@ -494,7 +498,7 @@ class ActionLiPo:
         """
         ActionLiPo (Action Lightweight Post-Optimizer) for action optimization.      
         Parameters:
-        - solver: The solver to use. Options: "numpy" (default), "osqp", "cvxpy".
+        - solver: The solver to use. Options: "osqp" (default), "numpy", "cvxpy".
         - chunk_size: The size of the action chunk to optimize.
         - blending_horizon: The number of actions to blend with past actions.
         - action_dim: The dimension of the action space.
@@ -591,20 +595,4 @@ class ActionLiPo:
             self._fallback.reset_log()
 
     def print_solved_times(self):
-        if not self._log:
-            print("No logs available.")
-            return
-
-        finite_times = np.array(
-            [entry["time"] for entry in self._log if np.isfinite(entry["time"])],
-            dtype=float,
-        )
-        num_logs = len(self._log)
-        print(f"Number of logs: {num_logs}")
-        if finite_times.size == 0:
-            print("Average solved time: unavailable (no finite solve times logged)")
-            return
-
-        avg_time = np.mean(finite_times)
-        std_time = np.std(finite_times)
-        print(f"Average solved time: {avg_time:.4f} seconds, Std: {std_time:.4f} seconds")
+        _print_solved_times(self._log)

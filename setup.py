@@ -9,11 +9,12 @@ setup(
     packages=find_packages(),
     install_requires=[
         'numpy>=1.18.0',
+        'osqp>=1.0.0',
+        'scipy',
     ],
     extras_require={
         'cvxpy': ['cvxpy>=1.1.0'],
-        'osqp': ['osqp>=1.0.0', 'scipy'],
-        'all': ['cvxpy>=1.1.0', 'osqp>=1.0.0', 'scipy'],
+        'all': ['cvxpy>=1.1.0'],
     },
     python_requires='>=3.7',
     classifiers=[

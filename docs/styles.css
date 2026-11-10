@@ -228,3 +228,16 @@ h3.sub {
 .stat .arrow { color: var(--muted); }
 .stat .d { font-size: 13.5px; color: var(--muted); }
 @media (max-width: 620px) { .stat .k { width: 100%; } }
+
+/* demo: dark plot panel, chunk colours, zone swatches */
+.sw--chunks { background: linear-gradient(90deg,#ffb454 0 33%,#4fd1c5 33% 66%,#c79bff 66% 100%); }
+.sw--white { background: #1b1d1f; box-shadow: inset 0 0 0 1px #1b1d1f; }
+.sw--eps { background: #b9b5ac; }
+.sw--delay { background: #8ab4ff; }
+.sw--blendz { background: #ffb454; }
+.warn {
+  margin-top: 14px; font-size: 13.5px; line-height: 1.5; color: var(--muted);
+  padding: 10px 14px; background: var(--red-soft); border-radius: 10px; display: none;
+}
+.demo__foot { margin-top: 16px; }
+.sliders label i { font-style: italic; }

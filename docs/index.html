@@ -153,39 +153,46 @@
   <div class="wrap">
     <p class="sec-label">Try it</p>
     <h2>Run the method yourself.</h2>
-    <p class="lead">This is the actual pipeline, not an animation of it. A synthetic policy emits chunks that disagree slightly at their seams; the sliders change how LiPo schedules, blends and smooths them, and every curve below is recomputed in your browser.</p>
+    <p class="lead">This is the actual pipeline, not an animation of it. A synthetic policy emits chunks that disagree slightly at their seams. Reference construction follows Eq. (4)&ndash;(5) of the paper and the refinement follows Eq. (6), bounds and all; every curve below is recomputed in your browser as you move the sliders.</p>
 
     <div class="demo" id="demo">
-      <svg id="demo-svg" viewBox="0 0 920 320" aria-label="Position and velocity of the commanded trajectory, without LiPo in red and with LiPo in blue">
+      <svg id="demo-svg" viewBox="0 0 920 516" aria-label="Each inferred action chunk drawn in its own colour, the shaded band showing the perturbation bound, and the executed trajectory in white">
+        <g id="demo-back"></g>
         <g id="demo-pos"></g>
         <g id="demo-vel"></g>
+        <g id="demo-zoom"></g>
       </svg>
       <div class="legend">
-        <span><i class="sw sw--ref"></i>policy target</span>
-        <span><i class="sw sw--red"></i>raw chunks</span>
-        <span><i class="sw sw--blue"></i>after LiPo</span>
-        <span class="muted">vertical lines mark chunk boundaries</span>
+        <span><i class="sw sw--chunks"></i>individual action chunks</span>
+        <span><i class="sw sw--white"></i>executed after LiPo</span>
+        <span><i class="sw sw--eps"></i>allowed perturbation &epsilon;(t)</span>
+        <span><i class="sw sw--delay"></i>inference delay, &epsilon;&nbsp;=&nbsp;0</span>
+        <span><i class="sw sw--blendz"></i>blending zone</span>
       </div>
 
       <div class="sliders">
-        <label>Chunk size <b id="d-hv">40</b>
-          <input type="range" id="d-h" min="16" max="64" step="2" value="40"></label>
-        <label>Blending zone <b id="d-ovv">12</b>
-          <input type="range" id="d-ov" min="1" max="24" step="1" value="12"></label>
-        <label>Inference delay <b id="d-delayv">3</b>
-          <input type="range" id="d-delay" min="0" max="8" step="1" value="3"></label>
+        <label>Replan every <b id="d-stridev">30</b> steps
+          <input type="range" id="d-stride" min="14" max="60" step="2" value="30"></label>
+        <label>Inference delay <i>t</i><sub>d</sub> <b id="d-delayv">5</b> steps
+          <input type="range" id="d-delay" min="0" max="12" step="1" value="5"></label>
+        <label>Blending horizon <b id="d-blendv">10</b> steps
+          <input type="range" id="d-blend" min="1" max="24" step="1" value="10"></label>
         <label>Policy disagreement <b id="d-noisev">50</b>
           <input type="range" id="d-noise" min="0" max="120" step="5" value="50"></label>
-        <label>Bound &epsilon; <b id="d-epsv">10</b>
-          <input type="range" id="d-eps" min="0" max="30" step="1" value="10"></label>
-        <button class="chip" id="d-reseed" type="button">New policy noise</button>
+        <label>Blending bound &epsilon;&#772;<sub>b</sub> <b id="d-ebv">0.020</b> rad
+          <input type="range" id="d-eb" min="0" max="40" step="1" value="20"></label>
+        <label>Path bound &epsilon;&#772;<sub>p</sub> <b id="d-epv">0.003</b> rad
+          <input type="range" id="d-ep" min="0" max="40" step="1" value="3"></label>
       </div>
+      <p class="warn" id="d-warn">The paper keeps &epsilon;&#772;<sub>b</sub> above &epsilon;&#772;<sub>p</sub>: chunk boundaries carry more uncertainty, so they are given more room.</p>
+      <div class="demo__foot"><button class="chip" id="d-reseed" type="button">New policy noise</button></div>
 
       <div class="readout" id="demo-out"></div>
     </div>
+    </div>
 
-    <h3 class="sub">What does a wider bound buy you?</h3>
-    <p>Jerk minimization is allowed to move the trajectory, but only within &epsilon; of what the policy asked for. Push &epsilon; up and the motion gets smoother &mdash; up to a point &mdash; while drifting further from the policy. <b>Drag across the chart</b> to set it.</p>
+    <h3 class="sub">What does a wider blending bound buy you?</h3>
+    <p>Equation (6) gives the blending zone its own bound. Widening &epsilon;&#772;<sub>b</sub> smooths the handover &mdash; up to a point &mdash; at the cost of a larger perturbation, while the path bound &epsilon;&#772;<sub>p</sub> keeps the rest of the stroke close to what the policy asked for. <b>Drag across the chart</b> to set &epsilon;&#772;<sub>b</sub>.</p>
     <div class="demo demo--sweep">
       <svg id="demo-sweep" viewBox="0 0 920 150" aria-label="Peak jerk and maximum deviation as the bound epsilon increases">
         <g id="demo-sweep-g"></g>
